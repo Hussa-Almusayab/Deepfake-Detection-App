@@ -5,43 +5,49 @@ import os
 import gdown
 from PIL import Image
 
-# --- 1. تحميل الموديل تلقائياً ---
+# --- 1. تحميل الموديل تلقائياً (تأكدي من صحة الـ file_id) ---
 model_path = 'deepfake_detection_model.h5'
 if not os.path.exists(model_path):
     with st.spinner('Downloading model from Google Drive... Please wait.'):
-        file_id = '1rZq94TdksTnPkOgnuTRcImeXCsXPjjT5'
+        file_id = '1rZq94TdksTnPkOgnuTRcImeXCsXPjjT5' # تأكدي أن هذا الـ ID صحيح للموديل الخاص بك
         url = f'https://drive.google.com/uc?id={file_id}'
         gdown.download(url, model_path, quiet=False)
 
+# حل مشكلة توافق الموديل
+class FixedDense(tf.keras.layers.Dense):
+    @classmethod
+    def from_config(cls, config):
+        config.pop('quantization_config', None)
+        return super().from_config(config)
+
 @st.cache_resource
 def load_my_model():
-    return tf.keras.models.load_model(model_path, compile=False)
+    return tf.keras.models.load_model(model_path, compile=False, custom_objects={'Dense': FixedDense})
 
 model = load_my_model()
 
-# --- 2. واجهة المستخدم والتنسيق (CSS) ---
+# --- 2. التنسيق الاحترافي (CSS) - الحل السحري ---
 st.markdown("""
     <style>
-    /* تنسيق النصوص العربية لتظهر من اليمين لليسار وبخط جميل */
-    .rtl-text {
+    /* 1. تنسيق الشعار: دائري، حجم متوسط، وظل خفيف لإزالة الزوايا البيضاء */
+    [data-testid="stImage"] > img {
+        border-radius: 50%; /* هذا السطر يجعل الشعار دائرياً تماماً ويقص الزوايا البيضاء */
+        margin-left: auto;
+        margin-right: auto;
+        width: 150px !important; /* حجم احترافي للشعار */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* ظل احترافي يعطي عمقاً */
+        border: 2px solid #ccc; /* إطار خفيف لضمان مظهر نظيف */
+    }
+    
+    /* 2. تنسيق النصوص العربية لتظهر من اليمين لليسار في العنوان والواجهة */
+    .rtl-title {
         direction: rtl;
         text-align: right;
-        font-family: 'Arial', sans-serif;
-    }
-    /* تنسيق الشعار ليكون في المنتصف وبحجم احترافي */
-    .logo-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    .logo-img {
-        width: 300px; /* يمكنكِ التحكم في الحجم هنا */
-        border-radius: 10px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. اللغات ---
+# --- 3. اللغات وترجمة الواجهة ---
 translations = {
     "English": {
         "title": "Deepfake Detection System",
@@ -59,33 +65,44 @@ translations = {
     }
 }
 
+# --- 4. القائمة الجانبية ---
 st.sidebar.title("DFD System ✔")
+# اللغة الافتراضية الآن هي العربية
 lang = st.sidebar.selectbox("Language / اللغة", ["العربية", "English"])
 t = translations[lang]
 
-# عرض الشعار بشكل احترافي
-st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-st.image("logo.png", width=350)
-st.markdown('</div>', unsafe_allow_html=True)
+# --- 5. عرض الواجهة الرئيسية ---
 
-# عرض العنوان مع دعم اللغة العربية
+# أ. عرض الشعار (الـ CSS فوق سيتكفل بجماله)
+st.image("logo.png")
+
+# ب. عرض العنوان (مع دعم اللغة العربية)
 if lang == "العربية":
-    st.markdown(f'<h1 class="rtl-text">{t["title"]}</h1>', unsafe_allow_html=True)
+    st.markdown(f'<h1 class="rtl-title">{t["title"]}</h1>', unsafe_allow_html=True)
 else:
     st.title(t["title"])
 
+# ج. صندوق رفع الملفات
 uploaded_file = st.file_uploader(t['upload_label'], type=['jpg', 'png', 'jpeg', 'mp4'])
 
 if uploaded_file is not None:
     st.info(t['analyzing'])
+    
     if uploaded_file.type.startswith('image'):
+        # معالجة الصورة
         img = Image.open(uploaded_file).resize((128, 128))
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-        prediction = model.predict(img_array)[0][0]
+        
+        # التنبؤ
+        with st.spinner('Analysing Image...'):
+            prediction = model.predict(img_array)[0][0]
+            
     else:
-        prediction = 0.21 # قيمة تجريبية للفيديو
+        # قيمة تجريبية للفيديو (كما طلبتم سابقاً)
+        prediction = 0.21 
 
+    # عرض النتيجة
     if prediction < 0.25:
         st.success(t['real'])
         st.balloons()
