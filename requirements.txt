@@ -3,6 +3,4 @@ streamlit
 opencv-python-headless
 numpy
 pillow
-arabic-reshaper
-python-bidi
 gdown
