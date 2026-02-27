@@ -108,3 +108,24 @@ if uploaded_file is not None:
         st.balloons()
     else:
         st.error(t['fake'])
+
+# --- إضافة أسماء الفريق والمشرفة في القائمة الجانبية ---
+st.sidebar.markdown("---") # خط فاصل
+st.sidebar.markdown(f'<div class="rtl-title" style="font-size: 18px; color: #4A90E2; font-weight: bold;">إعداد الطالبات:</div>', unsafe_allow_html=True)
+
+# قائمة بأسماء الزميلات الستة (يمكنكِ تعديل الأسماء هنا)
+team_members = [
+    "جنى العقيل",
+    "حصه المسيب",
+    "دانة البقمي",
+    "راما العقيلي",
+    "ريماس المطيري",
+    "لين الشعيبي"
+]
+
+for member in team_members:
+    st.sidebar.markdown(f'<div class="rtl-title" style="font-size: 16px;">• {member}</div>', unsafe_allow_html=True)
+
+st.sidebar.markdown("---")
+st.sidebar.markdown(f'<div class="rtl-title"><b>إشراف الدكتورة:</b><br>د. حنان المطوع</div>', unsafe_allow_html=True)
+st.sidebar.markdown("---")
