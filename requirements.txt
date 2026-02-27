@@ -1,0 +1,7 @@
+tensorflow==2.15.0
+streamlit
+opencv-python-headless
+numpy
+pillow
+arabic-reshaper
+python-bidi
