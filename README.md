@@ -28,7 +28,7 @@ You can access the live application here:
 ## 👩‍💻 The Development Team
 Prepared by:
 * **Dana Albaqmi**
-* **Hussa Almusayb**
+* **Hussa Almusayab**
 * **Jana Alaqeel**
 * **Leen Alshuaibi**
 * **Rama Alagili**
