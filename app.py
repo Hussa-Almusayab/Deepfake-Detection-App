@@ -5,19 +5,21 @@ import os
 import gdown
 from PIL import Image
 
-# --- 1. إعدادات الصفحة وتحميل الشعار ---
+# --- 1. تحميل الصورة أولاً (مهم جداً للتعرف عليها) ---
 try:
+    # نقوم بفتح ملف الشعار الموجود في GitHub
     logo_img = Image.open("logo.png")
-except:
+except Exception:
     logo_img = None
 
+# --- 2. إعدادات الصفحة (يجب أن تكون أول أمر من أوامر Streamlit) ---
 st.set_page_config(
     page_title="Deepfake Detection System",
-    page_icon=logo_img,
+    page_icon=logo_img,  # هنا نستخدم الصورة التي حملناها لتظهر في التبويب
     layout="centered"
 )
 
-# --- 2. تحميل الموديل تلقائياً من قوقل درايف ---
+# --- 3. تحميل الموديل تلقائياً من قوقل درايف ---
 model_path = 'deepfake_detection_model.h5'
 if not os.path.exists(model_path):
     with st.spinner('Downloading model from Google Drive... Please wait.'):
@@ -38,9 +40,10 @@ def load_my_model():
 
 model = load_my_model()
 
-# --- 3. التنسيق الاحترافي (CSS) ---
+# --- 4. التنسيق الاحترافي (CSS) ---
 st.markdown("""
     <style>
+    /* تنسيق الشعار ليكون دائرياً وفي المنتصف */
     [data-testid="stImage"] > img {
         border-radius: 50%;
         display: block;
@@ -63,7 +66,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. اللغات وترجمة الواجهة ---
+# --- 5. اللغات وترجمة الواجهة ---
 translations = {
     "English": {
         "title": "Deepfake Detection System",
@@ -87,12 +90,13 @@ translations = {
     }
 }
 
-# --- 5. القائمة الجانبية (Sidebar) ---
+# --- 6. القائمة الجانبية (Sidebar) ---
 st.sidebar.title("DFD System ✔")
 lang = st.sidebar.selectbox("Language / اللغة", ["العربية", "English"])
 t = translations[lang]
 
-# --- 6. عرض الواجهة الرئيسية ---
+# --- 7. عرض الواجهة الرئيسية ---
+# عرض الشعار في أعلى الصفحة
 if logo_img:
     st.image(logo_img)
 
@@ -111,7 +115,6 @@ if uploaded_file is not None:
         img_array = np.expand_dims(img_array, axis=0)
         prediction = model.predict(img_array)[0][0]
     else:
-        # قيمة افتراضية للفيديو (تحتاج لاحقاً لكود معالجة الفريمات)
         prediction = 0.21 
 
     if prediction < 0.25:
@@ -120,7 +123,7 @@ if uploaded_file is not None:
     else:
         st.error(t['fake'])
 
-# --- 7. إضافة أسماء الفريق والمشرفة في القائمة الجانبية ---
+# --- 8. إضافة أسماء الفريق والمشرفة في القائمة الجانبية ---
 st.sidebar.markdown("---")
 if lang == "العربية":
     st.sidebar.markdown(f'<div class="rtl-title team-header">{t["team_header"]}</div>', unsafe_allow_html=True)
