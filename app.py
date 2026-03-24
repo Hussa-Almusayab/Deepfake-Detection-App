@@ -1,4 +1,12 @@
 import streamlit as st
+
+st.set_page_config(
+    page_title="Deepfake Detection System",
+    page_icon="🛡️", # أو رابط صورة شعاركم
+    layout="centered"
+)
+
+import streamlit as st
 import tensorflow as tf
 import numpy as np
 import os
