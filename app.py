@@ -1,19 +1,23 @@
 import streamlit as st
-
-st.set_page_config(
-    page_title="Deepfake Detection System",
-    page_icon="logo.png", # أو رابط صورة شعاركم
-    layout="centered"
-)
-
-import streamlit as st
 import tensorflow as tf
 import numpy as np
 import os
 import gdown
 from PIL import Image
 
-# --- 1. تحميل الموديل تلقائياً من قوقل درايف ---
+# --- 1. إعدادات الصفحة وتحميل الشعار ---
+try:
+    logo_img = Image.open("logo.png")
+except:
+    logo_img = None
+
+st.set_page_config(
+    page_title="Deepfake Detection System",
+    page_icon=logo_img,
+    layout="centered"
+)
+
+# --- 2. تحميل الموديل تلقائياً من قوقل درايف ---
 model_path = 'deepfake_detection_model.h5'
 if not os.path.exists(model_path):
     with st.spinner('Downloading model from Google Drive... Please wait.'):
@@ -34,11 +38,12 @@ def load_my_model():
 
 model = load_my_model()
 
-# --- 2. التنسيق الاحترافي (CSS) ---
+# --- 3. التنسيق الاحترافي (CSS) ---
 st.markdown("""
     <style>
     [data-testid="stImage"] > img {
         border-radius: 50%;
+        display: block;
         margin-left: auto;
         margin-right: auto;
         width: 150px !important;
@@ -58,7 +63,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. اللغات وترجمة الواجهة (تشمل الأسماء) ---
+# --- 4. اللغات وترجمة الواجهة ---
 translations = {
     "English": {
         "title": "Deepfake Detection System",
@@ -82,13 +87,14 @@ translations = {
     }
 }
 
-# --- 4. القائمة الجانبية (Sidebar) ---
+# --- 5. القائمة الجانبية (Sidebar) ---
 st.sidebar.title("DFD System ✔")
 lang = st.sidebar.selectbox("Language / اللغة", ["العربية", "English"])
 t = translations[lang]
 
-# --- 5. عرض الواجهة الرئيسية ---
-st.image("logo.png")
+# --- 6. عرض الواجهة الرئيسية ---
+if logo_img:
+    st.image(logo_img)
 
 if lang == "العربية":
     st.markdown(f'<h1 class="rtl-title">{t["title"]}</h1>', unsafe_allow_html=True)
@@ -105,6 +111,7 @@ if uploaded_file is not None:
         img_array = np.expand_dims(img_array, axis=0)
         prediction = model.predict(img_array)[0][0]
     else:
+        # قيمة افتراضية للفيديو (تحتاج لاحقاً لكود معالجة الفريمات)
         prediction = 0.21 
 
     if prediction < 0.25:
@@ -113,9 +120,8 @@ if uploaded_file is not None:
     else:
         st.error(t['fake'])
 
-# --- 6. إضافة أسماء الفريق والمشرفة في القائمة الجانبية بشكل ديناميكي ---
+# --- 7. إضافة أسماء الفريق والمشرفة في القائمة الجانبية ---
 st.sidebar.markdown("---")
-
 if lang == "العربية":
     st.sidebar.markdown(f'<div class="rtl-title team-header">{t["team_header"]}</div>', unsafe_allow_html=True)
     for name in t["names"]:
