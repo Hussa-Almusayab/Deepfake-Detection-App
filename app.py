@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Deepfake Detection System",
-    page_icon="🛡️", # أو رابط صورة شعاركم
+    page_icon="logo.png", # أو رابط صورة شعاركم
     layout="centered"
 )
 
