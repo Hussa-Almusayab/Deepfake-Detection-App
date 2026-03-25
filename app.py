@@ -4,6 +4,18 @@ import numpy as np
 import os
 import gdown
 from PIL import Image
+# 1. تحميل الصورة ككائن برمجياً أولاً
+logo_img = Image.open("logo.png")
+
+# 2. الآن نضعها في الأيقونة وفي الصفحة
+st.set_page_config(
+    page_title="Deepfake Detection System",
+    page_icon=logo_img, # هنا سيظهر في لسان المتصفح (Tab)
+    layout="centered"
+)
+
+# 3. عرض الصورة في واجهة الموقع
+st.image(logo_img) # هنا سيظهر الشعار الكبير في الصفحة
 
 # --- 1. تحميل الصورة أولاً (مهم جداً للتعرف عليها) ---
 try:
