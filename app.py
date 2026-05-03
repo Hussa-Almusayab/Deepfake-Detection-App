@@ -129,11 +129,11 @@ if uploaded_file is not None:
     else:
         prediction = 0.21 
 
-    if prediction < 0.25:
-        st.success(t['real'])
-        st.balloons()
-    else:
-        st.error(t['fake'])
+if prediction < 0.25:
+    st.error(t['fake'])   # إذا كانت النتيجة منخفضة فهي مزيفة
+else:
+    st.success(t['real'])  # إذا كانت النتيجة مرتفعة فهي حقيقية
+    st.balloons()
 
 # --- 8. إضافة أسماء الفريق والمشرفة في القائمة الجانبية ---
 st.sidebar.markdown("---")
