@@ -4,34 +4,20 @@ import numpy as np
 import os
 import gdown
 from PIL import Image
-# 1. تحميل الصورة ككائن برمجياً أولاً
-logo_img = Image.open("logo.png")
 
-# 2. الآن نضعها في الأيقونة وفي الصفحة
-st.set_page_config(
-    page_title="Deepfake Detection System",
-    page_icon=logo_img, # هنا سيظهر في لسان المتصفح (Tab)
-    layout="centered"
-)
-
-# 3. عرض الصورة في واجهة الموقع
-st.image(logo_img) # هنا سيظهر الشعار الكبير في الصفحة
-
-# --- 1. تحميل الصورة أولاً (مهم جداً للتعرف عليها) ---
+# --- 1. إعدادات الصفحة وتحميل الشعار (يجب أن تكون أول أمر) ---
 try:
-    # نقوم بفتح ملف الشعار الموجود في GitHub
     logo_img = Image.open("logo.png")
 except Exception:
     logo_img = None
 
-# --- 2. إعدادات الصفحة (يجب أن تكون أول أمر من أوامر Streamlit) ---
 st.set_page_config(
     page_title="Deepfake Detection System",
-    page_icon=logo_img,  # هنا نستخدم الصورة التي حملناها لتظهر في التبويب
+    page_icon=logo_img,
     layout="centered"
 )
 
-# --- 3. تحميل الموديل تلقائياً من قوقل درايف ---
+# --- 2. تحميل الموديل تلقائياً من قوقل درايف ---
 model_path = 'deepfake_detection_model.h5'
 if not os.path.exists(model_path):
     with st.spinner('Downloading model from Google Drive... Please wait.'):
@@ -52,7 +38,7 @@ def load_my_model():
 
 model = load_my_model()
 
-# --- 4. التنسيق الاحترافي (CSS) ---
+# --- 3. التنسيق الاحترافي (CSS) ---
 st.markdown("""
     <style>
     /* تنسيق الشعار ليكون دائرياً وفي المنتصف */
@@ -78,7 +64,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 5. اللغات وترجمة الواجهة ---
+# --- 4. اللغات وترجمة الواجهة ---
 translations = {
     "English": {
         "title": "Deepfake Detection System",
@@ -102,13 +88,13 @@ translations = {
     }
 }
 
-# --- 6. القائمة الجانبية (Sidebar) ---
+# --- 5. القائمة الجانبية (Sidebar) ---
 st.sidebar.title("DFD System ✔")
 lang = st.sidebar.selectbox("Language / اللغة", ["العربية", "English"])
 t = translations[lang]
 
-# --- 7. عرض الواجهة الرئيسية ---
-# عرض الشعار في أعلى الصفحة
+# --- 6. عرض الواجهة الرئيسية ---
+# عرض الشعار مرة واحدة فقط هنا
 if logo_img:
     st.image(logo_img)
 
@@ -129,13 +115,15 @@ if uploaded_file is not None:
     else:
         prediction = 0.21 
 
-if prediction < 0.25:
-    st.error(t['fake'])   # إذا كانت النتيجة منخفضة فهي مزيفة
-else:
-    st.success(t['real'])  # إذا كانت النتيجة مرتفعة فهي حقيقية
-    st.balloons()
+    # تم إصلاح المسافة البادئة (Indentation) هنا ليعمل الشرط فقط بعد رفع الصورة
+    # وتم عكس النتائج لتظهر بشكل صحيح
+    if prediction < 0.25:
+        st.error(t['fake'])
+    else:
+        st.success(t['real'])
+        st.balloons()
 
-# --- 8. إضافة أسماء الفريق والمشرفة في القائمة الجانبية ---
+# --- 7. إضافة أسماء الفريق والمشرفة في القائمة الجانبية ---
 st.sidebar.markdown("---")
 if lang == "العربية":
     st.sidebar.markdown(f'<div class="rtl-title team-header">{t["team_header"]}</div>', unsafe_allow_html=True)
