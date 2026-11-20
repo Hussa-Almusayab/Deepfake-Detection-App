@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png" alt="DFD Logo" width="150">
+</p>
+
 # Deepfake Detection System (DFD)
 A bilingual (Arabic/English) web app that classifies uploaded images and videos as real or manipulated. Capstone project for the B.Sc. in Cybersecurity (CYS 341), Onaizah Colleges, 2026.
 
@@ -11,6 +15,7 @@ Upload an image or video -> MTCNN detects the face -> a trained CNN scores it ->
 - Trained for 20 epochs with TensorFlow/Keras
 
 ## Baseline results
+
 | Metric | Result |
 |---|---|
 | Overall accuracy | 64% |
@@ -42,3 +47,7 @@ Supervisor: Dr. Hanan Abdullah Almutawa
 
 ## My contribution
 The project was developed collaboratively by the team of six. I carried most of the hands-on implementation: I merged the initial work of the two sub-teams into one codebase, then we completed the system together, including model training and evaluation, the bilingual Streamlit interface, testing, and the final report and presentation.
+
+---
+
+**License:** MIT
